@@ -1,4 +1,4 @@
-package graphe;
+package test.java.graphe;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,10 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import main.java.graphe.GrapheMAdj;
+import main.java.graphe.IGraphe;
 import org.junit.jupiter.api.Test;
 
 class IGrapheTest {
-	private final IGraphe[] graphes = { 
+	private final IGraphe[] graphes = {
 			new GrapheLArcs(), new GrapheLAdj(),
 			new GrapheMAdj(), new GrapheHHAdj()
 	};
