@@ -1,9 +1,5 @@
 package main.java.graphe;
 
-import org.w3c.dom.html.HTMLAreaElement;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
