@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class GrapheLAdj extends Graphe {
-    HashMap<String,HashMap<String, Integer>> listeAdjacence;
-    ArrayList<String> listeSommets;
+    private HashMap<String, ArrayList<Arc>> listeAdjacence;
     public GrapheLAdj() {
         listeAdjacence = new HashMap<>();
-        listeSommets = new ArrayList<>();
     }
 
     public GrapheLAdj(String str) {
@@ -20,8 +18,7 @@ public class GrapheLAdj extends Graphe {
     @Override
     public void ajouterSommet(String noeud) {
         if (!contientSommet(noeud)) {
-            listeSommets.add(noeud);
-            listeAdjacence.put(noeud, new HashMap<>());
+            listeAdjacence.put(noeud, new ArrayList<>());
         }
     }
 
@@ -34,55 +31,63 @@ public class GrapheLAdj extends Graphe {
         if (!contientSommet(destination)) {
             ajouterSommet(destination);
         }
-        if (!contientArc(source,destination)) {
-            HashMap<String,Integer> mapAdjSommet = listeAdjacence.get(source);
-            mapAdjSommet.put(destination,valeur);
-            listeAdjacence.put(source, mapAdjSommet);
+        if (!contientArc(source, destination)) {
+            ArrayList<Arc> listeArcs = listeAdjacence.get(source);
+            listeArcs.add(new Arc(source, destination, valeur));
+            listeAdjacence.put(source,listeArcs);
         }
     }
 
     @Override
     public void oterSommet(String noeud) {
         if (contientSommet(noeud)) {
-            listeSommets.remove(noeud);
             listeAdjacence.remove(noeud);
-            for (String sommet : listeSommets) {
-                HashMap<String,Integer> mapAdjSommet = listeAdjacence.get(sommet);
-                if (mapAdjSommet.containsKey(noeud)) {
-                    mapAdjSommet.remove(noeud);
+            for (String sommet : listeAdjacence.keySet()) {
+                ArrayList<Arc> listeArcs = listeAdjacence.get(sommet);
+                for (Arc arc : listeArcs) {
+                    if (arc.contientSommet(noeud)) {
+                        listeArcs.remove(arc);
+                    }
                 }
-                listeAdjacence.put(sommet,mapAdjSommet);
+                listeAdjacence.put(sommet,listeArcs);
             }
         } else {
-            throw new IllegalArgumentException(("Le sommet " + noeud + " n'existe pas"));
+            throw new IllegalArgumentException("Le sommet " + noeud + " n'existe pas");
         }
     }
 
     @Override
     public void oterArc(String source, String destination) {
-        boolean existeArc = false;
-        HashMap<String,Integer> mapAdjSommet = listeAdjacence.get(source);
-        if (mapAdjSommet.containsKey(destination)) {
-            mapAdjSommet.remove(destination);
-        }
-        listeAdjacence.put(source,mapAdjSommet);
-        if (!existeArc) {
-            throw new IllegalArgumentException(("L'arc (" + source + ", " + destination + ") n'existe pas"));
+        if (contientArc(source, destination)) {
+            ArrayList<Arc> listeArcs = listeAdjacence.get(source);
+            for (Arc arc: listeArcs) {
+                if (arc.est(source,destination)) {
+                    listeArcs.remove(arc);
+                    break;
+                }
+            }
+            listeAdjacence.put(source,listeArcs);
+        } else {
+            throw new IllegalArgumentException("L'arc (" + source + ", " + destination + ") n'existe pas");
         }
     }
 
     @Override
     public List<String> getSommets() {
+        ArrayList<String> listeSommets = new ArrayList<>();
+        for (String sommet : listeAdjacence.keySet()) {
+            listeSommets.add(sommet);
+        }
         return listeSommets;
     }
 
     @Override
     public List<String> getSucc(String sommet) {
-        ArrayList<String> listeSucc = null;
+        List<String> listeSucc = null;
         if (contientSommet(sommet)) {
             listeSucc = new ArrayList<>();
-            for (String noeud : listeAdjacence.get(sommet).keySet()) {
-                listeSucc.add(noeud);
+            for (Arc arc : listeAdjacence.get(sommet)) {
+                listeSucc.add(arc.getDestination());
             }
         }
         return listeSucc;
@@ -90,19 +95,26 @@ public class GrapheLAdj extends Graphe {
 
     @Override
     public int getValuation(String src, String dest) {
-        if (contientArc(src,dest)) {
-            return listeAdjacence.get(src).get(dest);
+        for (Arc arc : listeAdjacence.get(src)) {
+            if (arc.est(src, dest)) {
+                return arc.getValuation();
+            }
         }
-        throw new IllegalArgumentException(("L'arc (" + src + ", " + dest + ") n'existe pas"));
+        throw new IllegalArgumentException("L'arc (" + src + ", " + dest + ") n'existe pas");
     }
 
     @Override
     public boolean contientSommet(String sommet) {
-        return listeSommets.contains(sommet);
+        return listeAdjacence.containsKey(sommet);
     }
 
     @Override
     public boolean contientArc(String src, String dest) {
-        return (listeAdjacence.get(src).containsKey(dest));
+        for (Arc arc : listeAdjacence.get(src)) {
+            if (arc.est(src,dest)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
