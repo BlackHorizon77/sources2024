@@ -1,4 +1,4 @@
-# SAE 2.02 (Graphes)
+# SAE 2.02 - Graphes
 ---
 **Groupe 101 :**
 - KASSOU MAMODE Ali-Shan
