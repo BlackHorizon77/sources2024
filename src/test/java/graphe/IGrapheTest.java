@@ -104,8 +104,8 @@ class IGrapheTest {
 				+ " 8-2(4), 8-6(1), 9-2(4)",
 				g.toString());
 		assertEquals("5", a.getSource());
-		assertEquals("7", a.getDestination());		
-	}
+		assertEquals("7", a.getDestination());
+    }
 	
 	@Test
 	void petitTestImportation() {
@@ -114,9 +114,9 @@ class IGrapheTest {
 	}
 	
 	@Test
-	void importer() throws NumberFormatException, FileNotFoundException {
-		String graphesRep = "graphes"; 
-        String reponsesRep = "reponses"; 
+    void importer() throws NumberFormatException, FileNotFoundException {
+		String graphesRep = "graphes";
+        String reponsesRep = "reponses";
         try {
             List<Path> files1 = Files.list(Paths.get(graphesRep))
                                      .filter(Files::isRegularFile)
@@ -132,7 +132,10 @@ class IGrapheTest {
                 Path file1 = iterator1.next();
                 Path file2 = iterator2.next();
 
-                IGraphe g = new GrapheHHAdj(); 
+                // IGraphe g = new GrapheHHAdj();
+				IGraphe g = new GrapheLArcs();
+				// IGraphe g = new GrapheMAdj();
+				// IGraphe g = new GrapheLAdj();
                 Arc arc = GraphImporter.importer(file1.toFile(), g);
 
                 List<Integer> listeEntiers = new ArrayList<>();
