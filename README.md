@@ -10,4 +10,4 @@
 - GrapheLArcs
 - GrapheMadj
 - GrapheLAdj
-- GrapheHHAdj
+- (+ GrapheHHAdj)
